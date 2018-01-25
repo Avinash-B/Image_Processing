@@ -43,9 +43,9 @@ class Neural:
         errh1i = np.dot(errh2h1,self.wh1i)
         #Updating the weights of the network
         """Getting problem updating the weights of the algorithm"""
-        self.wh1i+=self.lr*np.dot(inputh1.T,np.dot(errh1i.T,(outputh1*(np.ones([1,100],dtype = np.int)-outputh1))))
-        self.wh2h1+= self.lr*np.dot(inputh2.T,np.dot(errh2h1.T,(outputh2*(np.ones([1,50],dtype = np.int)-outputh2))))
-        self.woh2+= self.lr*np.dot(inputo.T,np.dot(erroh2.T,(outputo*(np.ones([1,10],dtype = np.int)-outputo))))
+        self.wh1i+=self.lr*errh1i*np.dot((outputh1*(np.ones([1,100],dtype = np.int)-outputh1)).T,image)
+        self.wh2h1+= self.lr*errh2h1*np.dot((outputh2*(np.ones([1,50],dtype = np.int)-outputh2)).T,inputh1)
+        self.woh2+= self.lr*erroh2*np.dot((outputo*(np.ones([1,10],dtype = np.int)-outputo)).T,inputh2)
         
     def test(self,image):
         inputh1 = np.dot(image,(self.wh1i).T)

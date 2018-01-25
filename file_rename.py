@@ -1,4 +1,4 @@
-#Code for converting names of file in a order for training the neural network
+																																																																																																																																																																																																						#Code for converting names of file in a order for training the neural network
 import os,sys
 
 count = 1
