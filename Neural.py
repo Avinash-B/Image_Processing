@@ -63,10 +63,13 @@ class Neural:
 
     def test(self,image):
         inputh1 = np.dot(image,(self.wh1i).T)
+	inputh1 = inputh1/10000
         outputh1 = activation(inputh1)
         inputh2 = np.dot(outputh1,(self.wh2h1).T)
+	inputh2 = inputh2/1000
         outputh2 = activation(inputh2)
         inputo = np.dot(outputh2,(self.woh2).T)
+	inputo = inputo/10
         outputo = activation(inputo)
         print outputo
 
