@@ -35,24 +35,28 @@ class Neural:
     def train(self,image,result):
         #Training the neural net
         inputh1 = np.dot(image,(self.wh1i).T)
-        inputh1 = inputh1/1000
+        inputh1 = inputh1/np.amax(inputh1)
         outputh1 = activation(inputh1)
         inputh2 = np.dot(outputh1,(self.wh2h1).T)
-        inputh2 = inputh2/100
+        inputh2 = inputh2/np.amax(inputh2)
         outputh2 = activation(inputh2)
         inputo = np.dot(outputh2,(self.woh2).T)
-        inputo = inputo/10
+        inputo = inputo/np.amax(inputo)
         outputo = activation(inputo)
         #Calculating errors and back propagation
         error = result - outputo
         erroh2 = np.dot(error,self.woh2)
         errh2h1 = np.dot(erroh2,self.wh2h1)
         errh1i = np.dot(errh2h1,self.wh1i)
-        #Updating the weights of the network
-        """Getting problem updating the weights of the algorithm"""
+        #Updating the weights of the network along with managing the weights to be confined to 0-1
         self.wh1i+=self.lr*errh1i*np.dot((outputh1*(np.ones([1,100],dtype = np.int)-outputh1)).T,image)
+        #Dividing the weights with the largest number in it
+        #If this fails comment these weight lines
+        #self.wh1i = self.wh1i/max(self.wh1i)
         self.wh2h1+= self.lr*errh2h1*np.dot((outputh2*(np.ones([1,50],dtype = np.int)-outputh2)).T,inputh1)
+        #self.wh2h1 = self.wh2h1/max(self.wh2h1)
         self.woh2+= self.lr*erroh2*np.dot((outputo*(np.ones([1,10],dtype = np.int)-outputo)).T,inputh2)
+        #self.woh2 = self.woh2/max(self.woh2)
         np.save("wh1i.npy",self.wh1i)
         np.save("wh2h1.npy",self.wh2h1)
         np.save("woh2.npy",self.woh2)
