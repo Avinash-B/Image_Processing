@@ -14,8 +14,20 @@
 #Imports needed
 import numpy as np
 import cv2
+import math
 import os,sys
 
+#Code to counter ones whle x is large in activation function
+def logarithm(inputa):
+    shapes = inputa.shape
+    for i in range(0,shapes[1]):
+        if inputa[0,i] <=0:
+            inputa[0,i] = -1*inputa[0,i]
+            inputa[0,i] = math.log(inputa[0,i])
+            inputa[0,i] = -1*inputa[0,i]
+        else:
+            inputa[0,i] = math.log(inputa[0,i])
+    return inputa
 #Code to counter overflow in lambda operator
 def activation(inputa):
     shapes = inputa.shape
@@ -35,13 +47,14 @@ class Neural:
     def train(self,image,result):
         #Training the neural net
         inputh1 = np.dot(image,(self.wh1i).T)
-        inputh1 = inputh1/np.amax(inputh1)
+        inputh1 = logarithm(inputh1)
+        print inputh1
         outputh1 = activation(inputh1)
         inputh2 = np.dot(outputh1,(self.wh2h1).T)
-        inputh2 = inputh2/np.amax(inputh2)
+        inputh2 = logarithm(inputh2)
         outputh2 = activation(inputh2)
         inputo = np.dot(outputh2,(self.woh2).T)
-        inputo = inputo/np.amax(inputo)
+        inputo = logarithm(inputo)
         outputo = activation(inputo)
         #Calculating errors and back propagation
         error = result - outputo
