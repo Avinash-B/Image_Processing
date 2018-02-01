@@ -48,7 +48,6 @@ class Neural:
         #Training the neural net
         inputh1 = np.dot(image,(self.wh1i).T)
         inputh1 = logarithm(inputh1)
-        print inputh1
         outputh1 = activation(inputh1)
         inputh2 = np.dot(outputh1,(self.wh2h1).T)
         inputh2 = logarithm(inputh2)
@@ -62,13 +61,13 @@ class Neural:
         errh2h1 = np.dot(erroh2,self.wh2h1)
         errh1i = np.dot(errh2h1,self.wh1i)
         #Updating the weights of the network along with managing the weights to be confined to 0-1
-        self.wh1i+=self.lr*errh1i*np.dot((outputh1*(np.ones([1,100],dtype = np.int)-outputh1)).T,image)
+        self.wh1i+=self.lr*errh1i*np.dot((outputh1*(np.ones([1,100],dtype = np.int)-outputh1)/inputh1).T,image)
         #Dividing the weights with the largest number in it
         #If this fails comment these weight lines
         #self.wh1i = self.wh1i/max(self.wh1i)
-        self.wh2h1+= self.lr*errh2h1*np.dot((outputh2*(np.ones([1,50],dtype = np.int)-outputh2)).T,inputh1)
+        self.wh2h1+= self.lr*errh2h1*np.dot((outputh2*(np.ones([1,50],dtype = np.int)-outputh2)/inputh2).T,inputh1)
         #self.wh2h1 = self.wh2h1/max(self.wh2h1)
-        self.woh2+= self.lr*erroh2*np.dot((outputo*(np.ones([1,10],dtype = np.int)-outputo)).T,inputh2)
+        self.woh2+= self.lr*erroh2*np.dot((outputo*(np.ones([1,10],dtype = np.int)-outputo)/inputo).T,inputh2)
         #self.woh2 = self.woh2/max(self.woh2)
         np.save("wh1i.npy",self.wh1i)
         np.save("wh2h1.npy",self.wh2h1)
@@ -76,13 +75,13 @@ class Neural:
 
     def test(self,image):
         inputh1 = np.dot(image,(self.wh1i).T)
-	inputh1 = inputh1/10000
+        inputh1 = logarithm(inputh1)
         outputh1 = activation(inputh1)
         inputh2 = np.dot(outputh1,(self.wh2h1).T)
-	inputh2 = inputh2/1000
+        inputh2 = logarithm(inputh2)
         outputh2 = activation(inputh2)
         inputo = np.dot(outputh2,(self.woh2).T)
-	inputo = inputo/10
+        inputo = logarithm(inputo)
         outputo = activation(inputo)
         print outputo
 
